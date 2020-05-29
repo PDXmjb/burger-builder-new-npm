@@ -5,11 +5,11 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import {BrowserRouter} from 'react-router-dom';
 
-const app = () => {
+const RouterApp = () => {
     return (
         <BrowserRouter><App /></BrowserRouter>
     )
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<RouterApp></RouterApp>, document.getElementById('root'));
 registerServiceWorker();
