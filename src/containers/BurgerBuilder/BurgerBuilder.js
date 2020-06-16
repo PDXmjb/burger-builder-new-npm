@@ -6,7 +6,7 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import axios from '../../axios-orders';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/WithErrorHandler/WithErrorHandler'
-import {dispatch, connect} from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from '../../store/actions'
 
 const INGREDIENT_PRICES = {
@@ -29,7 +29,7 @@ class BurgerBuilder extends Component {
     componentDidMount () {
         axios.get('https://burger-builder-d3411.firebaseio.com/ingredients.json').then(
             response => {
-                this.props.onIngredientsUpdated(response.data);
+                this.props.ingredientsChanged(response.data);
             }
         ).catch(error => {
             this.setState({error: true});
@@ -48,8 +48,8 @@ class BurgerBuilder extends Component {
 
         updatedIngredients[type] = updatedCount;
         
-        this.props.onIngredientsUpdated(updatedIngredients);
-        this.props.onPriceUpdated(newPrice);
+        this.props.ingredientsChanged(updatedIngredients);
+        this.props.priceChanged(newPrice);
         this.updatePurchaseState(updatedIngredients);
     }
 
@@ -80,8 +80,8 @@ class BurgerBuilder extends Component {
 
             updatedIngredients[type] = updatedCount;
 
-            this.props.onIngredientsUpdated(updatedIngredients);
-            this.props.onPriceUpdated(newPrice);
+            this.props.ingredientsChanged(updatedIngredients);
+            this.props.priceChanged(newPrice);
             this.updatePurchaseState(updatedIngredients);
         }
         
@@ -118,19 +118,21 @@ class BurgerBuilder extends Component {
         //     this.setState({ loading: false, purchasing: false });
         // });        COMMENTED OUT, DOING ON CHECKOUT PAGE INSTEAD.
 
-        const query = [];
-        for (let i in this.props.ingredients) {
-            query.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.props.ingredients[i]));
-        }
+        //Commenting out, don't need anymore with redux.
+        // const query = [];
+        // for (let i in this.props.ingredients) {
+        //     query.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.props.ingredients[i]));
+        // }
 
-        query.push('price=' + this.props.totalPrice);
+        // query.push('price=' + this.props.totalPrice);
 
-        const queryString = query.join('&');
+        // const queryString = query.join('&');
         
-        this.props.history.push({
-            pathname: '/checkout',
-            search: queryString
-        });
+        // this.props.history.push({
+        //     pathname: '/checkout',
+        //     search: queryString
+        // });
+        this.props.history.push({pathname: '/checkout'});
 
     }
 
@@ -195,8 +197,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
     // Create dispatchers
     return {
-        onPriceUpdated: (price) => dispatch({type: actions.PRICE_CHANGED, totalPrice: price}),
-        onIngredientsUpdated: (ingredients) => dispatch({type: actions.INGREDIENTS_CHANGED, ingredients: ingredients}),
+        priceChanged: (price) => dispatch({type: actions.PRICE_CHANGED, totalPrice: price}),
+        ingredientsChanged: (ingredients) => dispatch({type: actions.INGREDIENTS_CHANGED, ingredients: ingredients}),
         setPurchaseable: (purchaseable) => dispatch({type: actions.PURCHASEABLE_CHANGED, purchaseable: purchaseable})
     }
 }
